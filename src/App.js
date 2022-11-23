@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
-import { convertToLocalTime, adjustTime } from './utils'
+import { adjustTime, getTimeInHourDec, convertTimeToFullDate } from './utils'
+import Time from './time';
+import TimePlot from './Plot';
 
 function App() {
 
   let options;
   const [location, setLatLng] = useState({ lat: 0, lng: 0 });
-  const [sunData, setSunData] = useState({})
-  const [requesting, setRequesting] = useState(false)
+  const [requesting, setRequesting] = useState(false);
+  const [dayBounds, setDayBounds] = useState({sunrise: 0, sunset: 0})
+  const [time, setAdjustedTime] = useState();
+  const [timeFactor, setTimeFactor] = useState();
+  const [plotData, setPlotData] = useState({x: [], y:[]});
+
   const success = (pos) => {
     if (requesting) {
       return
@@ -24,43 +28,78 @@ function App() {
   useEffect(() => {
     if (location.lat !== 0 && location.lng !== 0) {
       setRequesting(true)
-      axios({
-        method: 'get',
-        url: `https://api.sunrise-sunset.org/json?lat=${location.lat}&lng=${location.lng}`,
-      })
+      fetch(`https://api.sunrise-sunset.org/json?lat=${location.lat}&lng=${location.lng}`,
+      )
         .then(function (response) {
           setRequesting(false)
-          return response.data
+          return response.json()
 
         }).then((data) => {
-          setSunData(data.results)
+          const sunrise = convertTimeToFullDate(data.results.sunrise)
+          const sunset = convertTimeToFullDate(data.results.sunset)
 
+          setDayBounds({
+            sunrise: getTimeInHourDec(sunrise),
+            sunset: getTimeInHourDec(sunset)
+          })
         })
     }
   }, [location])
+
+  useEffect(() => {
+    if (!dayBounds.sunrise) {
+      return
+    }
+    let {
+      adjustedTime,
+      slope,
+    } = adjustTime(dayBounds.sunrise, dayBounds.sunset)
+    const currentTime = new Time(adjustedTime)
+    setTimeFactor(slope)
+    setAdjustedTime(currentTime.toTimeString())
+  }, [dayBounds])
+
+  useEffect(() => {
+    if (!time) {
+      return
+    }
+
+    const intervalId = setInterval(() => {
+      const currentTime = new Time(time)
+      currentTime.addSeconds(1)
+      setAdjustedTime(currentTime.toTimeString())
+    }, 1000 / timeFactor)
+
+    return function cleanup() {
+      clearInterval(intervalId);
+    };
+  }, [timeFactor, time])
 
 
   function error(err) {
     console.error(`ERROR(${err.code}): ${err.message}`);
   }
 
-
   options = {
     enableHighAccuracy: false,
     maximumAge: 100000
   };
   navigator.geolocation.watchPosition(success, error, options);
-
+  let {
+    xValues,
+    yValues,
+  } = adjustTime(dayBounds.sunrise, dayBounds.sunset)
+  if (!time) {
+    return 
+  }
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-          <li> Sunrise: {convertToLocalTime(sunData.sunrise)}</li>
-          <li>Sunset: {convertToLocalTime(sunData.sunset)}</li>
-          <li>{adjustTime(sunData.sunrise, sunData.sunset)}</li>
+        {/* <li>Sunrise: {convertToLocalTime(sunData.sunrise)}</li>
+          <li>Sunset: {convertToLocalTime(sunData.sunset)}</li> */}
+        <li>{time}</li>
+        <li>{new Time(time).toHours()}</li>
+        <TimePlot x={xValues} y={yValues} currentTime={{ x: getTimeInHourDec(new Date()), y: new Time(time).toHours() }}/>
       </header>
     </div>
   );
