@@ -1,6 +1,6 @@
 export const convertTimeToFullDate = (time) => {
     const today = new Date()
-    return new Date(Date.parse(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} ${time} UTC`))  
+    return new Date(Date.parse(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} ${time} UTC`))
 }
 
 const convertHourToTime = (time) => {
@@ -25,8 +25,8 @@ const convertHourToTime = (time) => {
 
 export const getTimeInHourDec = (time) => {
     const hour = time.getHours()
-    let mins = time.getMinutes() 
-    const seconds = time.getSeconds() 
+    let mins = time.getMinutes()
+    const seconds = time.getSeconds()
     mins = mins + seconds / 60
     return hour + mins / 60
 }
@@ -34,6 +34,19 @@ export const getTimeInHourDec = (time) => {
 export const getSlope = (x1, x2) => {
     return 12.0 / (x2 - x1)
 }
+
+export const convertTime = (normalTime, sunriseHour, sunsetHour, daySlope, dayIntercept, nightIntercept, nightSlope) => {
+    let newTime
+    if (normalTime > sunsetHour) {
+        newTime = nightSlope * normalTime + nightIntercept - 24
+    } else if (normalTime < sunriseHour) {
+        newTime = nightSlope * normalTime
+    } else {
+        newTime = daySlope * normalTime + dayIntercept
+    }
+    return newTime
+}
+
 
 export const adjustTime = (sunriseHour, sunsetHour) => {
 
@@ -50,31 +63,22 @@ export const adjustTime = (sunriseHour, sunsetHour) => {
     const nightIntercept = adjustedSixPM - nightSlope * sunsetHour
     const daySlope = getSlope(sunriseHour, sunsetHour)
     const dayIntercept = sixPM - daySlope * sunsetHour
-    for (let normalTime = 0; normalTime <= 24.0; normalTime++) {
+    for (let normalTime = 0; normalTime < 24.0; normalTime++) {
         xValues.push(normalTime)
-        let newTime
-        if (normalTime > sunsetHour) {
-            newTime = nightSlope * normalTime + nightIntercept - 24
-        } else if (normalTime < sunriseHour) {
-            newTime = nightSlope * normalTime
-        } else {
-            newTime = daySlope * normalTime + dayIntercept
-        }
+        const newTime = convertTime(normalTime, sunriseHour, sunsetHour, daySlope, dayIntercept, nightIntercept, nightSlope)
         yValues.push(newTime)
-        
-    }
-    if (now > sunriseHour) {
-        slope = nightSlope
-        adjustedTime = slope * now + nightIntercept - 24
 
-    } else {
+    }
+    const newTime = convertTime(now, sunriseHour, sunsetHour, daySlope, dayIntercept, nightIntercept, nightSlope)
+    if (now >= sunriseHour || now <= sunsetHour ) {
         slope = daySlope
-        adjustedTime = slope * now + dayIntercept
+    } else {
+        slope = nightIntercept
     }
     return {
-        adjustedTime: convertHourToTime(adjustedTime),
+        adjustedTime: convertHourToTime(newTime),
         slope,
-        isTomorrow: adjustedTime > 24,
+        isTomorrow: newTime > 24,
         yValues,
         xValues
     }
