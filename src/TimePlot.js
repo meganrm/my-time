@@ -29,7 +29,6 @@ function TimePlot({ x, y, currentTime, height, width, time }) {
     }
 
     const outerRadius = Math.max(dayRadius, nightRadius)
-
     const markerColor = (degree) => {
         const index = Math.round(Math.cos(2 * degreesToRadians(degree)) + 1)
         const dayColors = ["#bb3e03", "#ca6702", "#E9D8A6"]
@@ -74,7 +73,7 @@ function TimePlot({ x, y, currentTime, height, width, time }) {
                     theta: dayArc,
                     type: 'scatterpolar',
                     mode: 'line',
-                    fill: 'toself',
+                    fill: 'tonext',
 
                     line: { color: '#bb3e03' },
                     marker: {
@@ -85,7 +84,7 @@ function TimePlot({ x, y, currentTime, height, width, time }) {
 
 
                 {
-                    r: [0, isDay ? dayRadius : nightRadius],
+                    r: [0, isDay(currentTime.y / 24.0 * 360) ? dayRadius : nightRadius],
                     theta: [0, currentTime.y / 24.0 * 360],
                     type: 'scatterpolar',
                     mode: 'marker',
