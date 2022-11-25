@@ -110,6 +110,13 @@ class Time {
             return `${hours}:${mins}:${seconds} AM`
         }
     }
+
+    toTwentyFourHourTime = () => {
+        const hours = this.hours
+        const mins = '00'.substring(0, 2 - this.mins.toString().length) + this.mins
+        const seconds = '00'.substring(0, 2 - this.seconds.toString().length) + this.seconds
+        return `${hours}:${mins}:${seconds}`
+    }
 }
 
 export default Time

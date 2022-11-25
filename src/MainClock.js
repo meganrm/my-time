@@ -36,11 +36,11 @@ function MainClock({height, width}) {
         }).then((data) => {
           const sunrise = convertTimeToFullDate(data.results.sunrise)
           const sunset = convertTimeToFullDate(data.results.sunset)
-          console.log(sunrise, sunset)
           setDayBounds({
             sunrise: getTimeInHourDec(sunrise),
             sunset: getTimeInHourDec(sunset)
           })
+
         }).catch(console.log)
     }
   }, [location])

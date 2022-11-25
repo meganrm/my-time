@@ -1,6 +1,7 @@
-export const convertTimeToFullDate = (time) => {
+export const convertTimeToFullDate = (timeString) => {
     const today = new Date()
-    return new Date(Date.parse(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} ${time} UTC`))
+    const dateString = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()} ${timeString} UTC`
+    return new Date(Date.parse(dateString))
 }
 
 const convertHourToTime = (time) => {
@@ -52,7 +53,6 @@ export const adjustTime = (sunriseHour, sunsetHour) => {
 
     const sixPM = 18.0
     const now = getTimeInHourDec(new Date())
-    let adjustedTime
     let slope
     let xValues = []
     let yValues = []
