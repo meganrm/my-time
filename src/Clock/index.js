@@ -28,14 +28,15 @@ function Clock({ y, currentTime, height, width, time }) {
 
     const markerColor = (degree) => {
         const dayColors = ["#9B2226", "#AE2012", "#bb3e03", "#ca6702", "#EE9B00"];
-        const nightColors = ["E9D8A6", "#94d2bd", "#0a9396", "#023e4b"];
+        const nightColors = ["001219", "#023e4b", "#0a9396", "#94d2bd", "E9D8A6"];
+        const radians = degreesToRadians(degree);
+        const index = Math.floor(-3 * Math.cos(radians) + 3);
         if (isDay(degree)) {
-            const index = Math.round(Math.cos(4 * degreesToRadians(degree)) + 2);
             return dayColors[index];
         }
-        const index = Math.round(Math.cos(3 * degreesToRadians(degree)) + 1.5);
         return nightColors[index];
     };
+
     const radialAxisTicks = getRadialAxisMarkers(dayRadius);
     return (
         <div>
@@ -131,7 +132,6 @@ function Clock({ y, currentTime, height, width, time }) {
                         ticktext: radialAxisTicks.map(ele => ele.name),
                         tickcolor: "#b6bac2",
                         gridcolor: "#6e6e6e",
-                        // rotation: -1590,
                         layer: "below traces",
                         tickangle: 45,
                         tickfont: {
@@ -147,7 +147,7 @@ function Clock({ y, currentTime, height, width, time }) {
                         rotation: 270,
                         tickmode: "array",
                         tickvals: [0, 45, 90, 135, 180, 225, 270, 315],
-                        ticktext: ["midnight", "3 am", "6 am", "9 am", "noon", "3 pm", "6 pm", "9 pm"],
+                        // ticktext: ["midnight", "3 am", "6 am", "9 am", "noon", "3 pm", "6 pm", "9 pm"],
                         color: TICK_FONT_COLOR,
                         layer: "below traces",
 
