@@ -27,10 +27,10 @@ function Clock({ y, currentTime, height, width, time }) {
     const nightRadius = EQUINOX_RADIUS + ((EQUINOX_RADIUS * (1 - thetaFactor)) / (thetaFactor + 1));
 
     const markerColor = (degree) => {
-        const dayColors = ["#9B2226", "#AE2012", "#bb3e03", "#ca6702", "#EE9B00"];
+        const dayColors = ["#EE9B00", "#ca6702", "#bb3e03", "#AE2012", "#9B2226"];
         const nightColors = ["001219", "#023e4b", "#0a9396", "#94d2bd", "E9D8A6"];
         const radians = degreesToRadians(degree);
-        const index = Math.floor(-3 * Math.cos(radians) + 3);
+        const index = Math.floor(-3 * Math.cos(radians / 0.5) + 3);
         if (isDay(degree)) {
             return dayColors[index];
         }
