@@ -27,12 +27,13 @@ function Clock({ y, currentTime, height, width, time }) {
     const nightRadius = EQUINOX_RADIUS + ((EQUINOX_RADIUS * (1 - thetaFactor)) / (thetaFactor + 1));
 
     const markerColor = (degree) => {
-        const index = Math.round(Math.cos(2 * degreesToRadians(degree)) + 1);
-        const dayColors = ["#bb3e03", "#ca6702", "#E9D8A6"];
-        const nightColors = ["#94d2bd", "#0a9396", "#023e4b"];
+        const dayColors = ["#9B2226", "#AE2012", "#bb3e03", "#ca6702", "#EE9B00"];
+        const nightColors = ["E9D8A6", "#94d2bd", "#0a9396", "#023e4b"];
         if (isDay(degree)) {
+            const index = Math.round(Math.cos(4 * degreesToRadians(degree)) + 2);
             return dayColors[index];
         }
+        const index = Math.round(Math.cos(3 * degreesToRadians(degree)) + 1.5);
         return nightColors[index];
     };
     const radialAxisTicks = getRadialAxisMarkers(dayRadius);
@@ -44,7 +45,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     theta: NIGHT_ARC,
                     type: "scatterpolar",
                     mode: "line",
-                    line: { color: EQUILUX_COLOR },
+                    line: { color: EQUILUX_COLOR, width: 1 },
                     name: "EquiLux circle",
                     hovertext: "EquiLux circle",
                     hoverinfo: "name",
@@ -55,7 +56,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     type: "scatterpolar",
                     mode: "line",
                     fill: "tonext",
-                    line: { color: NIGHT_COLOR },
+                    line: { color: NIGHT_COLOR, width: 4 },
                     name: "Dark time",
                     hoverinfo: "name",
                 },
@@ -65,7 +66,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     theta: DAY_ARC,
                     type: "scatterpolar",
                     mode: "line",
-                    line: { color: EQUILUX_COLOR },
+                    line: { color: EQUILUX_COLOR, width: 1 },
                     name: "EquiLux circle",
                     hoverinfo: "name",
                 },
@@ -75,7 +76,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     type: "scatterpolar",
                     mode: "line",
                     fill: "tonext",
-                    line: { color: DAY_COLOR },
+                    line: { color: DAY_COLOR, width: 4 },
                     name: "Light time",
                     hoverinfo: "name",
                 },
@@ -130,9 +131,9 @@ function Clock({ y, currentTime, height, width, time }) {
                         ticktext: radialAxisTicks.map(ele => ele.name),
                         tickcolor: "#b6bac2",
                         gridcolor: "#6e6e6e",
-                        rotation: -1590,
+                        // rotation: -1590,
                         layer: "below traces",
-                        tickangle: 27,
+                        tickangle: 45,
                         tickfont: {
                             color: TICK_FONT_COLOR,
                         },
