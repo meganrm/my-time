@@ -5,6 +5,13 @@ import Plot from "react-plotly.js";
 import { BACKGROUND_COLOR, DAY_ARC, NIGHT_ARC, EQUINOX_RADIUS, FULL_CIRCLE } from "../constants";
 import { degreesToRadians } from "../utils";
 import { getRadialAxisMarkers } from "./selectors";
+import {
+    GRID_COLOR,
+    EQUILUX_COLOR,
+    NIGHT_COLOR,
+    DAY_COLOR,
+    TICK_FONT_COLOR,
+} from "./constants";
 
 function Clock({ y, currentTime, height, width, time }) {
     const isDay = (degree) => {
@@ -37,7 +44,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     theta: NIGHT_ARC,
                     type: "scatterpolar",
                     mode: "line",
-                    line: { color: "#8a8165" },
+                    line: { color: EQUILUX_COLOR },
                     name: "EquiLux circle",
                     hovertext: "EquiLux circle",
                     hoverinfo: "name",
@@ -48,7 +55,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     type: "scatterpolar",
                     mode: "line",
                     fill: "tonext",
-                    line: { color: "#0a9396" },
+                    line: { color: NIGHT_COLOR },
                     name: "Dark time",
                     hoverinfo: "name",
                 },
@@ -58,7 +65,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     theta: DAY_ARC,
                     type: "scatterpolar",
                     mode: "line",
-                    line: { color: "#8a8165" },
+                    line: { color: EQUILUX_COLOR },
                     name: "EquiLux circle",
                     hoverinfo: "name",
                 },
@@ -68,7 +75,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     type: "scatterpolar",
                     mode: "line",
                     fill: "tonext",
-                    line: { color: "#bb3e03" },
+                    line: { color: DAY_COLOR },
                     name: "Light time",
                     hoverinfo: "name",
                 },
@@ -127,20 +134,20 @@ function Clock({ y, currentTime, height, width, time }) {
                         layer: "below traces",
                         tickangle: 27,
                         tickfont: {
-                            color: "#b6bac2",
+                            color: TICK_FONT_COLOR,
                         },
                     },
                     angularaxis: {
                         direction: "clockwise",
                         gridwidth: 0.1,
-                        linecolor: "white",
-                        tickcolor: "white",
+                        linecolor: GRID_COLOR,
+                        tickcolor: GRID_COLOR,
                         period: 8,
                         rotation: 270,
                         tickmode: "array",
                         tickvals: [0, 45, 90, 135, 180, 225, 270, 315],
                         ticktext: ["midnight", "3 am", "6 am", "9 am", "noon", "3 pm", "6 pm", "9 pm"],
-                        color: "white",
+                        color: TICK_FONT_COLOR,
                         layer: "below traces",
 
                     },
