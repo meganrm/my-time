@@ -147,7 +147,7 @@ function Clock({ y, currentTime, height, width, time }) {
                         rotation: 270,
                         tickmode: "array",
                         tickvals: [0, 45, 90, 135, 180, 225, 270, 315],
-                        // ticktext: ["midnight", "3 am", "6 am", "9 am", "noon", "3 pm", "6 pm", "9 pm"],
+                        ticktext: ["midnight", "3 am", "6 am", "9 am", "noon", "3 pm", "6 pm", "9 pm"],
                         color: TICK_FONT_COLOR,
                         layer: "below traces",
 
