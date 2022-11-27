@@ -15,57 +15,58 @@ const EQUINOX_RADIUS = 30;
 const BACKGROUND_COLOR = "#282c34";
 
 const SEASON_DATES = {
-    2022: {
-        spring_equinox: {
+    2022: [
+        {
             day: 21,
             month: 3,
             phenom: "Equinox",
+            year: 2022,
         },
-        summer_solstice: {
+        {
             day: 21,
             month: 6,
             phenom: "Solstice",
+            year: 2022,
         },
-        fall_equinox: {
+        {
             day: 23,
             month: 9,
             phenom: "Equinox",
-            time: "10:04 DT",
+            year: 2022,
         },
-        winter_solstice: {
+        {
             day: 22,
             month: 12,
             phenom: "Solstice",
+            year: 2022,
         },
-    },
-    2023: {
-        spring_equinox: {
+    ],
+    2023: [
+        {
             day: 21,
             month: 3,
             phenom: "Equinox",
-            time: "06:24 DT",
+            year: 2023,
         },
-        summer_solstice: {
+        {
             day: 21,
             month: 6,
             phenom: "Solstice",
-            time: "23:58 DT",
+            year: 2023,
         },
-
-        fall_equinox: {
+        {
             day: 23,
             month: 9,
             phenom: "Equinox",
-            time: "15:50 DT",
+            year: 2023,
         },
-        winter_solstice: {
+        {
             day: 22,
             month: 12,
             phenom: "Solstice",
-            time: "11:27 ST",
+            year: 2023,
         },
-
-    },
+    ],
 };
 export {
     SEASON_DATES,

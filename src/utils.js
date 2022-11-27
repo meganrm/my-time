@@ -115,28 +115,41 @@ function getDaysIntoYear(date) {
     return (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
 }
 
+const convertDateToDegrees = (dateString) => {
+    const date = new Date(dateString);
+    const daysIntoYears = getDaysIntoYear(date);
+    return daysIntoYears / 365.25 * 360;
+};
+
+const getRadiusFromDegrees = (factor, h, degrees) => {
+    return factor * Math.cos(degreesToRadians(degrees - h)) + 30;
+};
+
+const convertEventToDate = (eventData) => {
+    const now = new Date();
+    return `${now.getFullYear()}, ${eventData.month}, ${eventData.day}`;
+};
+
 export const getRadialAxisMarkers = (dayRadius) => {
     const now = new Date();
-
-    const season = getSeason();
     const seasons = SEASON_DATES[now.getFullYear()];
+    const equinox = convertEventToDate(seasons.filter(seasonData => seasonData.phenom === "Equinox")[1]);
+    const solstices = seasons.filter(seasonData => seasonData.phenom !== "Equinox");
+    const todayInDegrees = convertDateToDegrees(new Date());
+    const equinoxDayInDegrees = convertDateToDegrees(equinox);
+    const h = equinoxDayInDegrees - 270;
 
-    const daysIntoYear = getDaysIntoYear(new Date());
+    const nowUnscaled = Math.cos(degreesToRadians(todayInDegrees - h));
+    const factor = (dayRadius - 30) / nowUnscaled;
 
-
-    const winterSolstice = new Date(`${now.getFullYear()}, ${seasons.winter_solstice.month}, ${seasons.winter_solstice.day}`);
-    const summerSolstice = new Date(`${now.getFullYear()}, ${seasons.summer_solstice.month}, ${seasons.summer_solstice.day}`)
-
-    const shortestDay = getDaysIntoYear(winterSolstice);
-    const longestDay = getDaysIntoYear(summerSolstice);
-    const shortestDayToDegrees = shortestDay / 365.25 * 360;
-    const longestDayToDegrees = longestDay / 365.25 * 360;
-    const todayToDegrees = daysIntoYear / 365.25 * 360;
-    const h = 365.25 - shortestDay;
-    // y = 30 * Math.sine(x - h);
-    const smallestRadius = 60 * Math.sin(degreesToRadians(shortestDayToDegrees) - h) + 30;
-    const largestRadius = 60 * Math.sin(degreesToRadians(longestDayToDegrees) - h) + 30;
-    const nowRadius = 60 * Math.sin(degreesToRadians(todayToDegrees) - h) + 30;
-
-    return { smallestRadius, largestRadius, nowRadius };
+    const radii = solstices.map(convertEventToDate)
+        .map((dateString, index) => {
+            const radius = getRadiusFromDegrees(factor, h, (convertDateToDegrees(dateString)));
+            const name = solstices[index].phenom;
+            return {
+                radius,
+                name,
+            };
+        });
+    return [...radii.sort((a, b) => a.radius - b.radius)];
 };
