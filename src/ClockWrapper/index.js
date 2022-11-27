@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
-import "./App.css";
-import { adjustTime, getTimeInHourDec, convertTimeToFullDate } from "./utils";
-import Time from "./time";
-import TimePlot from "./Clock";
+import "../App.css";
+import { adjustTime, getTimeInHourDec, convertTimeToFullDate } from "./selectors";
+import Time from "../time";
+import Clock from "../Clock";
 
 function ClockWrapper ({ height, width }) {
     const [location, setLatLng] = useState({ lat: 0, lng: 0 });
@@ -98,7 +98,7 @@ function ClockWrapper ({ height, width }) {
     }
     return (
         <div>
-            <TimePlot
+            <Clock
                 width={width}
                 height={height}
                 y={yValues}

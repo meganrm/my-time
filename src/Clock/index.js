@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import Plot from "react-plotly.js";
-import { BACKGROUND_COLOR, DAY_ARC, NIGHT_ARC, EQUINOX_RADIUS, FULL_CIRCLE } from "./constants";
-import { degreesToRadians } from "./polarPlot";
-import { getRadialAxisMarkers } from "./utils";
 
-function TimePlot({ y, currentTime, height, width, time }) {
+import { BACKGROUND_COLOR, DAY_ARC, NIGHT_ARC, EQUINOX_RADIUS, FULL_CIRCLE } from "../constants";
+import { degreesToRadians } from "../utils";
+import { getRadialAxisMarkers } from "./selectors";
+
+function Clock({ y, currentTime, height, width, time }) {
     const isDay = (degree) => {
         return Math.cos(degreesToRadians(degree)) <= 0;
     };
@@ -151,4 +152,4 @@ function TimePlot({ y, currentTime, height, width, time }) {
     );
 }
 
-export default TimePlot;
+export default Clock;
