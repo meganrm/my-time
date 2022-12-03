@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import { adjustTime, getTimeInHourDec, convertTimeToFullDate, getConvertedTime } from "./selectors";
+import { adjustTime, getTimeInHourDec, convertTimeToFullDate } from "./selectors";
 import Time from "../time";
 import Clock from "../Clock";
 import DebuggingPlot from "../DebugginPlot";
@@ -58,17 +58,17 @@ function ClockWrapper({ height, width, setRequesting, location }) {
         if (!time) {
             return;
         }
-        const { slope, intercept } = conversionFactors;
+        const { slope } = conversionFactors;
 
         const previousHours = new Time(time).getHours();
         const intervalId = setInterval(() => {
             const currentTime = new Time(time);
-            const newTime = getConvertedTime(slope, intercept, dayBounds);
+            // const newTime = getConvertedTime(slope, intercept, dayBounds);
             currentTime.addSeconds(1);
             if (previousHours < 6.0 && currentTime.getHours() > 6.0) {
                 return setConversionFactors(initState);
             }
-            console.log("formula", newTime, "time by adding", currentTime.toHours());
+            // console.log("formula", newTime, "time by adding", currentTime.toHours());
             setConvertedTime(currentTime.toTimeString());
             // setConvertedTime(new Time(newTime).toTimeString());
         }, 1000 / slope);
