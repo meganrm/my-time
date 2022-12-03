@@ -2,7 +2,7 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-function TimePlot ({ x, y, currentTime }) {
+function DebuggingPlot ({ x, y, currentTime }) {
     return (
         <Plot
             data={[
@@ -22,10 +22,10 @@ function TimePlot ({ x, y, currentTime }) {
                 },
 
             ]}
-            layout={{ width: 400, height: 400, title: "Time" }}
+            layout={{ width: 600, height: 400, title: "Time" }}
             config={{ responsive: true }}
         />
     );
 }
 
-export default TimePlot;
+export default DebuggingPlot;
