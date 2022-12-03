@@ -8,11 +8,19 @@ class Time {
         };
     }
 
+    static convertHour(hour) {
+        const hours = Math.floor(hour);
+        const minsInDec = (hour - hours) * 60;
+        const mins = Math.floor(minsInDec);
+        const seconds = Math.round((minsInDec - mins) * 60);
+        return {
+            hours,
+            mins,
+            seconds,
+        };
+    }
+
     static parse (timeString) {
-        if (!timeString) {
-            console.log("no time string provided");
-            return "";
-        }
         const splitOnColon = timeString.split(":");
         let hours = Number(splitOnColon[0]);
         let mins;
@@ -36,8 +44,26 @@ class Time {
         };
     }
 
-    constructor (timeString) {
-        const { hours, mins, seconds } = Time.parse(timeString);
+    constructor (inputTime) {
+        let hours;
+        let mins;
+        let seconds;
+        if (typeof inputTime === "string") {
+            ({ hours, mins, seconds } = Time.parse(inputTime));
+        } else if (typeof inputTime === "number") {
+            ({ hours, mins, seconds } = Time.convertHour(inputTime));
+        } else {
+            const now = new Date();
+            const hours = now.getHours();
+            const mins = now.getMinutes();
+            const seconds = now.getSeconds();
+            return {
+                hours,
+                mins,
+                seconds,
+            };
+        }
+
         this.hours = hours;
         this.mins = mins;
         this.seconds = seconds;

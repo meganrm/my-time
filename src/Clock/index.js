@@ -3,8 +3,7 @@ import React from "react";
 import Plot from "react-plotly.js";
 
 import { BACKGROUND_COLOR, DAY_ARC, NIGHT_ARC, EQUINOX_RADIUS, FULL_CIRCLE } from "../constants";
-import { degreesToRadians } from "../utils";
-import { getRadialAxisMarkers } from "./selectors";
+import { getRadialAxisMarkers, isDay, getMarkerColor } from "./selectors";
 import {
     GRID_COLOR,
     EQUILUX_COLOR,
@@ -14,9 +13,6 @@ import {
 } from "./constants";
 
 function Clock({ y, currentTime, height, width, time }) {
-    const isDay = (degree) => {
-        return Math.cos(degreesToRadians(degree)) <= 0;
-    };
     const degrees = y.map(yValue => yValue / 24.0 * 360);
     const dayDegrees = degrees.filter(isDay);
     const changeInDay = dayDegrees[1] - dayDegrees[0];
@@ -25,17 +21,6 @@ function Clock({ y, currentTime, height, width, time }) {
     const thetaFactor = changeInNight / changeInDay;
     const dayRadius = EQUINOX_RADIUS - ((EQUINOX_RADIUS * (1 - thetaFactor)) / (thetaFactor + 1));
     const nightRadius = EQUINOX_RADIUS + ((EQUINOX_RADIUS * (1 - thetaFactor)) / (thetaFactor + 1));
-
-    const markerColor = (degree) => {
-        const dayColors = ["#EE9B00", "#ca6702", "#bb3e03", "#AE2012", "#9B2226"];
-        const nightColors = ["001219", "#023e4b", "#0a9396", "#94d2bd", "E9D8A6"];
-        const radians = degreesToRadians(degree);
-        const index = Math.floor(-3 * Math.cos(radians / 0.5) + 3);
-        if (isDay(degree)) {
-            return dayColors[index];
-        }
-        return nightColors[index];
-    };
 
     const radialAxisTicks = getRadialAxisMarkers(dayRadius);
     return (
@@ -87,8 +72,8 @@ function Clock({ y, currentTime, height, width, time }) {
                     type: "scatterpolar",
                     mode: "line",
                     fill: "toself",
-                    fillcolor: markerColor(currentTime.y / 24.0 * 360),
-                    line: { color: markerColor(currentTime.y / 24.0 * 360) },
+                    fillcolor: getMarkerColor(currentTime.y / 24.0 * 360),
+                    line: { color: getMarkerColor(currentTime.y / 24.0 * 360) },
                     hoverinfo: "skip",
                 },
                 {
@@ -96,7 +81,7 @@ function Clock({ y, currentTime, height, width, time }) {
                     theta: [0, currentTime.y / 24.0 * 360],
                     type: "scatterpolar",
                     mode: "marker",
-                    marker: { color: markerColor(currentTime.y / 24.0 * 360), size: 8 },
+                    marker: { color: getMarkerColor(currentTime.y / 24.0 * 360), size: 8 },
                     line: { width: 4 },
                     hoverinfo: "skip",
                 },

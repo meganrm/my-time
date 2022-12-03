@@ -1,6 +1,10 @@
 import { SEASON_DATES } from "../constants";
 import { degreesToRadians } from "../utils";
 
+export const isDay = (degree) => {
+    return Math.cos(degreesToRadians(degree)) <= 0;
+};
+
 export const getSeason = () => {
     const now = new Date();
     const thisMonth = now.getMonth() + 1;
@@ -26,6 +30,22 @@ export const getSeason = () => {
         return "light";
     }
     return "dark";
+};
+
+export const getMarkerIndex = (degree) => {
+    const radians = degreesToRadians(degree);
+    const index = Math.abs(-4 * Math.cos(radians));
+    return Math.floor(index);
+};
+
+export const getMarkerColor = (degree) => {
+    const dayColors = ["#ae4612", "#bb3e03", "#ca6702", "#EE9B00", "#E9D8A6"];
+    const nightColors = ["#94d2bd", "#0a9396", "#0a6a96", "#023e4b", "#001219"];
+    const index = getMarkerIndex(degree);
+    if (isDay(degree)) {
+        return dayColors[index];
+    }
+    return nightColors[index];
 };
 
 function getDaysIntoYear(date) {
