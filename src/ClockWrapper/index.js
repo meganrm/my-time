@@ -1,7 +1,11 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import { adjustTime, getTimeInHourDec, convertTimeToFullDate } from "./selectors";
+import {
+    adjustTime,
+    getTimeInHourDec,
+    convertTimeToFullDate,
+} from "./selectors";
 import Time from "../time";
 import Clock from "../Clock";
 import DebuggingPlot from "../DebugginPlot";
@@ -13,6 +17,16 @@ function ClockWrapper({ height, width, setRequesting, location }) {
     const [dayBounds, setDayBounds] = useState({ sunrise: 0, sunset: 0 });
     const [conversionFactors, setConversionFactors] = useState(initState);
     const [time, setConvertedTime] = useState(0);
+    const [seasons, setSeasons] = useState([]);
+    useEffect(() => {
+        fetch(
+            `https://aa.usno.navy.mil/api/seasons?year=${new Date().getFullYear()}`
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                setSeasons(data.data);
+            });
+    }, []);
 
     useEffect(() => {
         if (location.lat !== 0 && location.lng !== 0) {
@@ -36,7 +50,7 @@ function ClockWrapper({ height, width, setRequesting, location }) {
                 })
                 .catch(console.log);
         }
-    }, [location]);
+    }, [location, setRequesting]);
 
     useEffect(() => {
         if (!dayBounds.sunrise) {
@@ -44,7 +58,7 @@ function ClockWrapper({ height, width, setRequesting, location }) {
         }
         const { adjustedTime, slope, intercept } = adjustTime(
             dayBounds.sunrise,
-            dayBounds.sunset,
+            dayBounds.sunset
         );
         const currentTime = new Time(adjustedTime);
         setConversionFactors({
@@ -78,7 +92,10 @@ function ClockWrapper({ height, width, setRequesting, location }) {
         };
     }, [time, conversionFactors]);
 
-    const { xValues, yValues } = adjustTime(dayBounds.sunrise, dayBounds.sunset);
+    const { xValues, yValues } = adjustTime(
+        dayBounds.sunrise,
+        dayBounds.sunset
+    );
     if (!location) {
         return (
             <div>
@@ -93,19 +110,23 @@ function ClockWrapper({ height, width, setRequesting, location }) {
                 width={width}
                 height={height}
                 y={yValues}
+                seasons={seasons}
                 time={time || "Loading..."}
                 currentTime={{
                     x: getTimeInHourDec(new Date()),
                     y: new Time(time).toHours(),
                 }}
             />
-            {debugging && <DebuggingPlot
-                x={xValues} y={yValues}
-                currentTime={{
-                    x: getTimeInHourDec(new Date()),
-                    y: new Time(time).toHours(),
-                }}
-            />}
+            {debugging && (
+                <DebuggingPlot
+                    x={xValues}
+                    y={yValues}
+                    currentTime={{
+                        x: getTimeInHourDec(new Date()),
+                        y: new Time(time).toHours(),
+                    }}
+                />
+            )}
         </div>
     );
 }
